@@ -124,23 +124,46 @@ app.use((err, req, res, next) => {
   });
 });
 
+// app.listen(PORT, async () => {
+//   console.log(`
+// ╔═══════════════════════════════════════════════════════╗
+// ║   Research Platform API Server                        ║
+// ║   Server running on: http://localhost:${PORT}           ║
+// ║   Environment: ${process.env.NODE_ENV || 'development'}                          ║
+// ║   Health check: http://localhost:${PORT}/api/health    ║
+// ╚═══════════════════════════════════════════════════════╝
+//   `);
+
+//   try {
+//     await runMigrations();
+//     console.log('✓ Server is ready to handle requests\n');
+//   } catch (error) {
+//     console.error('✗ Failed to run migrations. Server may not work correctly.');
+//     console.error('Error:', error.message);
+//   }
+// });
 app.listen(PORT, async () => {
   console.log(`
 ╔═══════════════════════════════════════════════════════╗
 ║   Research Platform API Server                        ║
-║   Server running on: http://localhost:${PORT}           ║
-║   Environment: ${process.env.NODE_ENV || 'development'}                          ║
-║   Health check: http://localhost:${PORT}/api/health    ║
+║   Server running on: http://localhost:${PORT}         ║
+║   Environment: ${process.env.NODE_ENV || 'development'}║
+║   Health check: http://localhost:${PORT}/api/health   ║
 ╚═══════════════════════════════════════════════════════╝
   `);
 
-  try {
-    await runMigrations();
-    console.log('✓ Server is ready to handle requests\n');
-  } catch (error) {
-    console.error('✗ Failed to run migrations. Server may not work correctly.');
-    console.error('Error:', error.message);
+  // ⛔ DO NOT RUN MIGRATIONS IN PRODUCTION
+  if (process.env.NODE_ENV !== 'production') {
+    try {
+      await runMigrations();
+      console.log('✓ Migrations complete\n');
+    } catch (error) {
+      console.error('✗ Migration failed:', error.message);
+    }
+  } else {
+    console.log('ℹ️  Skipping migrations in production');
   }
 });
+
 
 export default app;
