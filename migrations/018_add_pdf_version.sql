@@ -1,0 +1,3 @@
+-- NOTE: This migration is intentionally no-op since we changed the strategy
+-- Instead of storing version separately, we'll use the pdf_url as the authoritative source
+-- The pdf_url already contains the version as provided by Cloudinary
