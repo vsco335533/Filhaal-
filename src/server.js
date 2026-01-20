@@ -44,35 +44,46 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      frameSrc: ["'self'", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
-      frameAncestors: ["'self'", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"]
+      frameSrc: [
+        "'self'",
+        "https://*.vercel.app",
+        "https://filhaal.onrender.com",
+        "https://res.cloudinary.com"
+      ],
+      frameAncestors: [
+        "'self'",
+        "https://*.vercel.app"
+      ]
     }
   }
 }));
 
+
 // ✅ CORS CONFIGURATION (VERY IMPORTANT)
-const allowedOrigins = [
-  "https://filhaal-alpha.vercel.app",
-  "https://filhaal-cbx57dyu-mittapelli-saikrishnas-projects-023f393f.vercel.app",
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "http://localhost:5175"
-];
+
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (Postman, server-to-server)
+    // allow requests without origin (Postman, server-to-server)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+    // allow localhost
+    if (origin.startsWith("http://localhost")) {
+      return callback(null, true);
     }
+
+    // allow all Vercel deployments
+    if (origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
   },
   credentials: true
 }));
 
+
+app.options("*", cors());
 
 
 
