@@ -40,11 +40,12 @@ router.get('/pdf/:publicId', getPdfFile);
 // Get PDF file by issue ID (for iframe display)
 router.get('/pdf-proxy/:issueId', getPdfFileById);
 
-// Get single issue (public)
-router.get('/:id', getIssueById);
-
 // Upload new issue (admin only)
 router.post('/upload', authenticate, upload.single('pdf'), uploadIssue);
+
+// Get single issue (public)
+// router.get('/:id', getIssueById);
+router.get('/:id([0-9a-fA-F-]{36})', getIssueById);
 
 // Update issue metadata (admin only)
 router.put('/:id', authenticate, updateIssueMeta);
