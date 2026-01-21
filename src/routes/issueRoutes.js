@@ -44,8 +44,8 @@ router.get('/pdf-proxy/:issueId', getPdfFileById);
 router.post('/upload', authenticate, upload.single('pdf'), uploadIssue);
 
 // Get single issue (public)
-// router.get('/:id', getIssueById);
-router.get('/:id([0-9a-fA-F-]{36})', getIssueById);
+router.get('/:id', getIssueById);
+
 
 // Update issue metadata (admin only)
 router.put('/:id', authenticate, updateIssueMeta);
