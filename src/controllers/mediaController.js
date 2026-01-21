@@ -61,7 +61,7 @@ export const uploadMedia = async (req, res) => {
         ]
       );
 
-      return res.status(201).json(result.rows[0]);
+      return res.status(200).json(result.rows[0]);
     }
 
     if (!req.file) {
@@ -134,7 +134,7 @@ export const uploadMedia = async (req, res) => {
       ]
     );
 
-    res.status(201).json(result.rows[0]);
+    res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error("Media upload error:", err);
     // In development it's useful to return the underlying error message so the frontend

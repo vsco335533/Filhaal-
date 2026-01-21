@@ -15,7 +15,25 @@ export const getAllCategories = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
+    
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Category name is required' });
+    }
+
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    // Check if category already exists
+    const existing = await query(
+      'SELECT * FROM categories WHERE slug = $1',
+      [slug]
+    );
+
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ 
+        error: 'Category already exists',
+        category: existing.rows[0]
+      });
+    }
 
     const result = await query(
       'INSERT INTO categories (name, slug, description) VALUES ($1, $2, $3) RETURNING *',
@@ -28,6 +46,12 @@ export const createCategory = async (req, res) => {
     });
   } catch (error) {
     console.error('Create category error:', error);
+    
+    // Handle duplicate key constraint errors
+    if (error.code === '23505') {
+      return res.status(409).json({ error: 'Category with this name already exists' });
+    }
+    
     res.status(500).json({ error: 'Failed to create category' });
   }
 };
